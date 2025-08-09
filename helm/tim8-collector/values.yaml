@@ -1,0 +1,15 @@
+gatewayUrl: "https://tim8-gateway.example.com"
+clusterName: "dev-1"
+workspace: "Default"
+enrollToken: "REPLACE_ME"       # fourni par /api/enroll-token
+namespaces: ["default"]         # namespaces à surveiller (read-only)
+
+image:
+  repository: ghcr.io/your-org/tim8-collector
+  tag: latest
+  pullPolicy: IfNotPresent
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

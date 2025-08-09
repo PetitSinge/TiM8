@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: agent-runbook
+  namespace: incident-copilot
+spec:
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: agent-runbook
+  template:
+    metadata: 
+      labels: 
+        app: agent-runbook
+    spec:
+      containers:
+      - name: app
+        image: docker.io/petitsinge/incident-copilot-agent-runbook:latest
+        ports: 
+        - containerPort: 8000
+        envFrom:
+        - secretRef: 
+            name: copilot-secrets
+        - configMapRef: 
+            name: copilot-config
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: agent-runbook
+  namespace: incident-copilot
+spec:
+  selector: 
+    app: agent-runbook
+  ports: 
+  - port: 8000
+    targetPort: 8000

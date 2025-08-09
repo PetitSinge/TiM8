@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tim8-collector
+  namespace: tim8-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: tim8-collector }
+  template:
+    metadata:
+      labels: { app: tim8-collector }
+    spec:
+      serviceAccountName: tim8-reader
+      containers:
+      - name: collector
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: GATEWAY_URL
+          value: "{{ .Values.gatewayUrl }}"
+        - name: CLUSTER_NAME
+          value: "{{ .Values.clusterName }}"
+        - name: WORKSPACE
+          value: "{{ .Values.workspace }}"
+        - name: ENROLL_TOKEN
+          value: "{{ .Values.enrollToken }}"
+        - name: NAMESPACES
+          value: "{{ join "," .Values.namespaces }}"
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      nodeSelector: {{- toYaml .Values.nodeSelector | nindent 8 }}
+      tolerations: {{- toYaml .Values.tolerations | nindent 8 }}
+      affinity: {{- toYaml .Values.affinity | nindent 8 }}

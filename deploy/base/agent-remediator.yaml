@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: agent-remediator
+  namespace: incident-copilot
+spec:
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: agent-remediator
+  template:
+    metadata: 
+      labels: 
+        app: agent-remediator
+    spec:
+      containers:
+      - name: app
+        image: docker.io/petitsinge/incident-copilot-agent-remediator:latest
+        ports: 
+        - containerPort: 8000
+        envFrom:
+        - secretRef: 
+            name: copilot-secrets
+        - configMapRef: 
+            name: copilot-config
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: agent-remediator
+  namespace: incident-copilot
+spec:
+  selector: 
+    app: agent-remediator
+  ports: 
+  - port: 8000
+    targetPort: 8000

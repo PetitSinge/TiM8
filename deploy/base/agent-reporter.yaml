@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: agent-reporter
+  namespace: incident-copilot
+spec:
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: agent-reporter
+  template:
+    metadata: 
+      labels: 
+        app: agent-reporter
+    spec:
+      containers:
+      - name: app
+        image: docker.io/petitsinge/incident-copilot-agent-reporter:latest
+        ports: 
+        - containerPort: 8000
+        envFrom:
+        - secretRef: 
+            name: copilot-secrets
+        - configMapRef: 
+            name: copilot-config
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: agent-reporter
+  namespace: incident-copilot
+spec:
+  selector: 
+    app: agent-reporter
+  ports: 
+  - port: 8000
+    targetPort: 8000

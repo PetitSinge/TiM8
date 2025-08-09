@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: chaos-oom-killer
+  namespace: devops-copilot
+spec:
+  template:
+    spec:
+      containers:
+      - name: oom-killer
+        image: busybox
+        command: ["sh", "-c", "x=; while true; do x=$x$x$x$x; done"]
+        resources:
+          limits:
+            memory: "32Mi"
+        restartPolicy: Never
+      restartPolicy: Never
+  backoffLimit: 1

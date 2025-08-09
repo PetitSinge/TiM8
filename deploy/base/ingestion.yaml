@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: ingestion
+  namespace: incident-copilot
+spec:
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: ingestion
+  template:
+    metadata: 
+      labels: 
+        app: ingestion
+    spec:
+      containers:
+      - name: app
+        image: docker.io/petitsinge/incident-copilot-ingestion:latest
+        ports: 
+        - containerPort: 8000
+        envFrom:
+        - secretRef: 
+            name: copilot-secrets
+        - configMapRef: 
+            name: copilot-config
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: ingestion
+  namespace: incident-copilot
+spec:
+  selector: 
+    app: ingestion
+  ports: 
+  - port: 8000
+    targetPort: 8000

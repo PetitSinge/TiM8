@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base/namespace.yaml
+  - ../../base/configmap.yaml
+  - ../../base/gateway.yaml
+  - ../../base/agent-detective.yaml
+  - ../../base/agent-context.yaml
+  - ../../base/agent-runbook.yaml
+  - ../../base/agent-remediator.yaml
+  - ../../base/agent-reporter.yaml
+  - ../../base/ingestion.yaml
+  - ../../base/ui.yaml
+# Create your own Secret from template:
+# kubectl -n incident-copilot create secret generic copilot-secrets --from-literal=OPENAI_API_KEY=sk-... --from-literal=TIDB_HOST=... --from-literal=TIDB_USER=... --from-literal=TIDB_PASSWORD=... --from-literal=TIDB_DB=incidentdb

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: tim8-collector
+description: TiM8 agent collector (push mode) for external clusters
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

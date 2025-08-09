@@ -1,0 +1,86 @@
+version: "3.8"
+
+services:
+  ingestion:
+    build: ./services/ingestion
+    ports:
+      - "8000:8000"
+    environment:
+      - TIDB_HOST=localhost
+      - TIDB_PORT=4000
+      - TIDB_USER=root
+      - TIDB_PASSWORD=
+      - TIDB_DB=incidentdb
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+
+  gateway:
+    build: ./services/gateway
+    ports:
+      - "8080:8000"
+    environment:
+      - DETECTIVE_URL=http://agent-detective:8000
+      - CONTEXT_URL=http://agent-context:8000
+      - RUNBOOK_URL=http://agent-runbook:8000
+      - REMED_URL=http://agent-remediator:8000
+      - REPORT_URL=http://agent-reporter:8000
+      - TIDB_HOST=localhost
+      - TIDB_PORT=4000
+      - TIDB_USER=root
+      - TIDB_PASSWORD=
+      - TIDB_DB=incidentdb
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - ingestion
+
+  agent-detective:
+    build: ./services/agent-detective
+    environment:
+      - TIDB_HOST=localhost
+      - TIDB_PORT=4000
+      - TIDB_USER=root
+      - TIDB_PASSWORD=
+      - TIDB_DB=incidentdb
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+
+  agent-context:
+    build: ./services/agent-context
+    environment:
+      - TIDB_HOST=localhost
+      - TIDB_PORT=4000
+      - TIDB_USER=root
+      - TIDB_PASSWORD=
+      - TIDB_DB=incidentdb
+
+  agent-runbook:
+    build: ./services/agent-runbook
+    environment:
+      - TIDB_HOST=localhost
+      - TIDB_PORT=4000
+      - TIDB_USER=root
+      - TIDB_PASSWORD=
+      - TIDB_DB=incidentdb
+
+  agent-remediator:
+    build: ./services/agent-remediator
+    environment:
+      - TIDB_HOST=localhost
+      - TIDB_PORT=4000
+      - TIDB_USER=root
+      - TIDB_PASSWORD=
+      - TIDB_DB=incidentdb
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+
+  agent-reporter:
+    build: ./services/agent-reporter
+    environment:
+      - SLACK_WEBHOOK=${SLACK_WEBHOOK}
+
+  ui:
+    build: ./ui
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE=http://localhost:8080
+      - NEXT_PUBLIC_WS_BASE=http://localhost:8080
+    depends_on:
+      - gateway

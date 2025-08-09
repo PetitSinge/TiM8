@@ -1,0 +1,35 @@
+{{- $namespaces := .Values.namespaces | default list -}}
+{{- range $ns := $namespaces }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $ns }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tim8-namespace-reader
+  namespace: {{ $ns }}
+rules:
+- apiGroups: [""]
+  resources: ["pods","pods/log","events","services","endpoints"]
+  verbs: ["get","list","watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments","replicasets","statefulsets","daemonsets"]
+  verbs: ["get","list","watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tim8-rb-namespace-reader
+  namespace: {{ $ns }}
+subjects:
+- kind: ServiceAccount
+  name: tim8-reader
+  namespace: tim8-agent
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tim8-namespace-reader
+{{- end }}

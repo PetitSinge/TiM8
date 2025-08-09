@@ -1,0 +1,9 @@
+TiM8 Collector installed.
+
+Helm values used:
+- gatewayUrl: {{ .Values.gatewayUrl }}
+- clusterName: {{ .Values.clusterName }}
+- workspace: {{ .Values.workspace }}
+- namespaces: {{ join "," .Values.namespaces }}
+
+The agent will push health to: {{ .Values.gatewayUrl }}/api/agent/*
